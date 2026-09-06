@@ -12,10 +12,24 @@ sem simulados e sem IA — conforme o PRD.
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 O site sobe em <http://localhost:3000>.
+
+### Variáveis de ambiente
+
+`.env` não é versionado; `.env.example` é o modelo. Duas variáveis, ambas
+opcionais em desenvolvimento:
+
+| Variável               | Para que serve                                          |
+| ---------------------- | ------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL` | Domínio público, usado por `sitemap.xml` e `robots.txt`. |
+| `ACERVO_ORIGEM`        | Pasta do acervo bruto lida por `npm run acervo`.          |
+
+Em produção, defina `NEXT_PUBLIC_SITE_URL` no painel da hospedagem — sem isso o
+sitemap sai apontando para `localhost`.
 
 ## Como o acervo entra no site
 

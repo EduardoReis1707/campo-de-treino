@@ -16,8 +16,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
+// O Next carrega o .env sozinho; este script roda no node puro, então lê à mão.
+try {
+  process.loadEnvFile();
+} catch {
+  // Sem .env o script segue com o caminho padrão abaixo.
+}
+
 const ACERVO_ORIGEM =
-  process.env.ACERVO_ORIGEM ??
+  process.env.ACERVO_ORIGEM ||
   "C:/Users/Leticia Lima/Documents/Codex/2026-09-06/ol/outputs/Campo de Treino";
 
 const RAIZ = path.resolve(import.meta.dirname, "..");
