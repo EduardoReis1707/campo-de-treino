@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
+/*
+ * Campo de Treino — sistema visual.
+ *
+ * Grafite e papel carregam a página; o verde-oliva marca só o que é ação ou
+ * estado. A landing usa escala tipográfica grande e condensada; o catálogo usa
+ * listas densas e sóbrias, porque ali o trabalho é localizar documento.
+ */
+@theme {
+  --color-grafite-900: #15181a;
+  --color-grafite-800: #1e2326;
+  --color-grafite-700: #2a3034;
+  --color-grafite-600: #3d4549;
+  --color-grafite-500: #565e63;
+  --color-grafite-300: #9aa2a6;
+  --color-grafite-200: #cbd0d2;
+  --color-grafite-100: #e4e7e8;
+
+  --color-papel: #f6f5f2;
+  --color-papel-fundo: #ecebe6;
+
+  --color-oliva-700: #46521f;
+  --color-oliva-600: #5c6b3c;
+  --color-oliva-500: #74854c;
+  --color-oliva-400: #93a55e;
+  --color-oliva-100: #e8ecdc;
+
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow-condensed), var(--font-barlow), sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-papel);
+  color: var(--color-grafite-900);
+  font-family: var(--font-sans);
+  /* Números tabulares mantêm anos e códigos alinhados nas listas do acervo. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* Foco sempre visível, inclusive sobre o grafite do topo e dos painéis. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-oliva-400);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+/* Regra de seção: separa sem pesar, no lugar de sombra ou borda de cartão. */
+@utility regua {
+  border-top: 1px solid var(--color-grafite-200);
 }
