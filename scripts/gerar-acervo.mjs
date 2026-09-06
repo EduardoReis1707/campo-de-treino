@@ -10,8 +10,14 @@
  *   public/acervo/...      cópias dos PDFs cuja hospedagem foi conferida
  *
  * Para publicar mais material, acrescente entradas em `LOTE` e rode de novo.
- * Só entram como `hospedar: true` documentos de fonte oficial já conferidos;
- * cópias de terceiros entram como referência à origem, sem hospedagem.
+ * `hospedar: true` copia o PDF para public/acervo e ele passa a abrir aqui.
+ * A situação de uso registrada depende da fonte, não da decisão de hospedar:
+ *   - fonte oficial          → "hospedagem_conferida" (verificada)
+ *   - cópia de terceiros     → "a_confirmar" (hospedada, permissão pendente)
+ *   - hospedar: false        → "somente_referencia" (só o link até a origem)
+ * O responsável pelo produto decide, entrada por entrada, se aceita o risco
+ * de hospedar uma cópia sem permissão confirmada; a etiqueta na página nunca
+ * chama isso de "conferido".
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -40,8 +46,9 @@ const DESCRICAO_LOTE =
 /**
  * Lote publicado. Cada entrada é uma pasta `selecao/categoria/ano` do acervo.
  *
- * `hospedar: true` só para documentos de fonte oficial conferidos. Os demais
- * aparecem no catálogo apenas com o caminho até a origem.
+ * `hospedar: true` copia o PDF, seja a fonte oficial ou uma cópia de
+ * terceiros — a decisão de aceitar o risco de hospedar cópia sem permissão
+ * confirmada foi tomada pelo responsável pelo produto em 06/09/2026.
  */
 const LOTE = [
   // ITA — fonte oficial vestibular.ita.br, conferida por amostragem.
@@ -54,25 +61,25 @@ const LOTE = [
 
   // EEAR — fonte oficial FAB, conferida por amostragem.
   { selecao: "EEAR", categoria: "Provas_e_gabaritos", ano: "2024", hospedar: true },
-  { selecao: "EEAR", categoria: "Editais", ano: "2026-2027", hospedar: false },
+  { selecao: "EEAR", categoria: "Editais", ano: "2026-2027", hospedar: true },
 
-  // AFA — edital oficial hospedado; provas e gabaritos são cópias de terceiros.
+  // AFA — edital oficial; provas e gabaritos são cópias de terceiros (Específico).
   { selecao: "AFA", categoria: "Editais", ano: "2027", hospedar: true },
-  { selecao: "AFA", categoria: "Provas", ano: "2024", hospedar: false },
-  { selecao: "AFA", categoria: "Provas", ano: "2025", hospedar: false },
-  { selecao: "AFA", categoria: "Gabaritos", ano: "2024", hospedar: false },
-  { selecao: "AFA", categoria: "Gabaritos", ano: "2025", hospedar: false },
+  { selecao: "AFA", categoria: "Provas", ano: "2024", hospedar: true },
+  { selecao: "AFA", categoria: "Provas", ano: "2025", hospedar: true },
+  { selecao: "AFA", categoria: "Gabaritos", ano: "2024", hospedar: true },
+  { selecao: "AFA", categoria: "Gabaritos", ano: "2025", hospedar: true },
 
-  // EsPCEx, EPCAR, CN e EN — cópias de terceiros: só referência à origem.
-  { selecao: "EsPCEx", categoria: "Editais", ano: "2026-2027", hospedar: false },
-  { selecao: "EsPCEx", categoria: "Provas", ano: "2024", hospedar: false },
-  { selecao: "EsPCEx", categoria: "Gabaritos", ano: "2024", hospedar: false },
-  { selecao: "EPCAR", categoria: "Editais", ano: "2026-2027", hospedar: false },
-  { selecao: "EPCAR", categoria: "Provas", ano: "2024", hospedar: false },
-  { selecao: "EPCAR", categoria: "Gabaritos", ano: "2024", hospedar: false },
-  { selecao: "CN", categoria: "Editais", ano: "2026", hospedar: false },
-  { selecao: "CN", categoria: "Provas", ano: "2024", hospedar: false },
-  { selecao: "EN", categoria: "Editais", ano: "2026", hospedar: false },
+  // EsPCEx, EPCAR, CN e EN — cópias de terceiros (Unipre, SEYP, Madematica).
+  { selecao: "EsPCEx", categoria: "Editais", ano: "2026-2027", hospedar: true },
+  { selecao: "EsPCEx", categoria: "Provas", ano: "2024", hospedar: true },
+  { selecao: "EsPCEx", categoria: "Gabaritos", ano: "2024", hospedar: true },
+  { selecao: "EPCAR", categoria: "Editais", ano: "2026-2027", hospedar: true },
+  { selecao: "EPCAR", categoria: "Provas", ano: "2024", hospedar: true },
+  { selecao: "EPCAR", categoria: "Gabaritos", ano: "2024", hospedar: true },
+  { selecao: "CN", categoria: "Editais", ano: "2026", hospedar: true },
+  { selecao: "CN", categoria: "Provas", ano: "2024", hospedar: true },
+  { selecao: "EN", categoria: "Editais", ano: "2026", hospedar: true },
 ];
 
 /**
@@ -570,11 +577,12 @@ function main() {
     const corrigido = { ...derivado, ...curadoriaDe(caminho) };
     const fonte = montarFonte(doc.fontes ?? []);
 
-    if (entrada.hospedar && !fonte.oficial) {
-      throw new Error(
-        `Lote pede hospedar ${caminho}, mas a fonte não é oficial (${fonte.rotulo}).`,
-      );
-    }
+    // Hospedar não implica "verificado": só a fonte oficial ganha esse selo.
+    const situacaoUso = !entrada.hospedar
+      ? "somente_referencia"
+      : fonte.oficial
+        ? "hospedagem_conferida"
+        : "a_confirmar";
 
     const id = idUnico(
       [
@@ -608,7 +616,7 @@ function main() {
       paginas: doc.paginas ?? null,
       bytes: doc.bytes ?? null,
       sha256: doc.sha256 ?? null,
-      situacaoUso: entrada.hospedar ? "hospedagem_conferida" : "somente_referencia",
+      situacaoUso,
       arquivo: arquivoPublico,
       fonte,
       dataConferencia: DATA_CONFERENCIA,
@@ -633,11 +641,15 @@ function main() {
     `${JSON.stringify({ geradoEm: DATA_CONFERENCIA, lote: DESCRICAO_LOTE, materiais }, null, 2)}\n`,
   );
 
-  const hospedados = materiais.filter((m) => m.arquivo).length;
+  const conferidos = materiais.filter((m) => m.situacaoUso === "hospedagem_conferida").length;
+  const aConfirmar = materiais.filter((m) => m.situacaoUso === "a_confirmar").length;
+  const referencia = materiais.filter((m) => m.situacaoUso === "somente_referencia").length;
   const selecoes = new Set(materiais.map((m) => m.selecao));
   console.log(
-    `${materiais.length} materiais em ${selecoes.size} seleções ` +
-      `(${hospedados} arquivos hospedados, ${materiais.length - hospedados} só com referência).`,
+    `${materiais.length} materiais em ${selecoes.size} seleções: ` +
+      `${conferidos} hospedados de fonte oficial, ` +
+      `${aConfirmar} hospedados como cópia sem permissão confirmada, ` +
+      `${referencia} só com referência à origem.`,
   );
 
   const semVinculo = materiais.filter((m) => m.tipo === "prova" && !m.gabaritoId).length;

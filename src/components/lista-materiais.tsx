@@ -35,7 +35,9 @@ function IconeTipo({ tipo }: { tipo: Material["tipo"] }) {
 function LinhaMaterial({ material }: { material: Material }) {
   const selecao = buscarSelecao(material.selecao);
   const tamanho = formatarTamanho(material.bytes);
-  const hospedado = material.situacaoUso === "hospedagem_conferida";
+  // "Hospedado" aqui é o fato técnico (o arquivo abre neste site), não o
+  // selo de verificação — esse é mostrado à parte, na ficha do documento.
+  const hospedado = Boolean(material.arquivo);
 
   return (
     <li className="regua first:border-t-0">

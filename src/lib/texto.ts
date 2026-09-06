@@ -20,9 +20,9 @@ export function rotuloTipo(tipo: keyof typeof ROTULOS_TIPO): string {
 }
 
 const ROTULOS_SITUACAO = {
-  hospedagem_conferida: "Arquivo conferido e disponível aqui",
+  hospedagem_conferida: "Fonte oficial, arquivo conferido e disponível aqui",
+  a_confirmar: "Arquivo hospedado aqui; permissão de uso ainda não confirmada",
   somente_referencia: "Disponível na fonte de origem",
-  a_confirmar: "Permissão de uso a confirmar",
 } as const;
 
 export function rotuloSituacao(situacao: keyof typeof ROTULOS_SITUACAO): string {

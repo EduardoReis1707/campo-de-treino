@@ -119,14 +119,21 @@ create table public.materiais (
   publicado_em timestamptz,
   criado_em timestamptz not null default now(),
   atualizado_em timestamptz not null default now(),
-  -- Um material publicado precisa ter fonte e situação de uso resolvidas.
+  -- Um material publicado precisa ter fonte e data de conferência registradas,
+  -- mesmo quando a permissão de uso (situacao_uso) ainda está a confirmar —
+  -- decisão do produto em 06/09/2026: cópia de terceiros pode ser hospedada
+  -- antes de a permissão ser confirmada, desde que a curadoria saiba a fonte.
   constraint publicado_tem_procedencia check (
     situacao <> 'publicado'
-    or (fonte_id is not null and situacao_uso <> 'a_confirmar' and data_conferencia is not null)
+    or (fonte_id is not null and data_conferencia is not null)
   ),
-  -- Arquivo hospedado só com a hospedagem conferida.
-  constraint arquivo_so_com_hospedagem check (
-    arquivo_caminho is null or situacao_uso = 'hospedagem_conferida'
+  -- Arquivo só é hospedado com a fonte pelo menos verificada como sendo
+  -- oficial ou uma cópia identificada; nunca com situação "a_confirmar" no
+  -- sentido de fonte desconhecida (esse enum não cobre "fonte desconhecida" —
+  -- a_confirmar aqui é sempre "sabemos de onde veio, falta confirmar direito
+  -- de republicar").
+  constraint arquivo_precisa_de_fonte check (
+    arquivo_caminho is null or fonte_id is not null
   )
 );
 

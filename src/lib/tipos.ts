@@ -25,16 +25,18 @@ export type TipoMaterial =
   | "informacao";
 
 /**
- * Situação de uso conferida na curadoria. Determina se o arquivo pode ser
- * hospedado pela plataforma ou se apenas a origem é referenciada.
+ * Situação de uso conferida na curadoria. Não indica se o arquivo abre aqui —
+ * isso é `arquivo !== null` — e sim o quanto a permissão de republicá-lo foi
+ * verificada. Um documento pode estar hospedado e ainda assim com a permissão
+ * a confirmar; a interface nunca chama isso de "conferido".
  */
 export type SituacaoUso =
-  /** Documento de fonte oficial, conferido, com cópia hospedada aqui. */
+  /** Fonte oficial da instituição; permissão de reproduzir para estudo verificada. */
   | "hospedagem_conferida"
-  /** Cópia de terceiros: a plataforma indica a origem e não hospeda o arquivo. */
-  | "somente_referencia"
-  /** Origem localizada, permissão de republicação ainda não verificada. */
-  | "a_confirmar";
+  /** Cópia de terceiros hospedada aqui por decisão do produto, sem permissão confirmada. */
+  | "a_confirmar"
+  /** Não hospedado: a plataforma só indica o caminho até a origem. */
+  | "somente_referencia";
 
 export type Fonte = {
   /** URL do arquivo original. */

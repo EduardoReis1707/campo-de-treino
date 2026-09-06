@@ -122,8 +122,17 @@ export default async function PaginaMaterial({ params }: PageProps<"/material/[i
   const gabarito = gabaritoDe(material);
   const provas = provasDe(material);
   const outros = relacionados(material);
-  const hospedado = material.situacaoUso === "hospedagem_conferida" && material.arquivo;
+  // "Hospedado" é o fato técnico (o arquivo abre aqui); a verificação de
+  // permissão é um dado à parte, mostrado na etiqueta e na ficha.
+  const hospedado = Boolean(material.arquivo);
+  const permissaoAConfirmar = material.situacaoUso === "a_confirmar";
   const ehProva = material.tipo === "prova" || material.tipo === "prova_e_gabarito";
+  const avisos = permissaoAConfirmar
+    ? [
+        "Esta cópia é de terceiros e foi hospedada por decisão da curadoria antes da confirmação da permissão de republicação.",
+        ...material.notas,
+      ]
+    : material.notas;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:py-14">
@@ -150,19 +159,22 @@ export default async function PaginaMaterial({ params }: PageProps<"/material/[i
         <div className="flex flex-wrap items-center gap-2">
           <Etiqueta tom="tipo">{rotuloTipo(material.tipo)}</Etiqueta>
           <Etiqueta tom={hospedado ? "disponivel" : "referencia"}>
-            {hospedado ? "Arquivo conferido aqui" : "Disponível na fonte"}
+            {hospedado ? "Arquivo disponível aqui" : "Disponível na fonte"}
           </Etiqueta>
+          {permissaoAConfirmar && (
+            <Etiqueta tom="referencia">Permissão de uso a confirmar</Etiqueta>
+          )}
         </div>
         <h1 className="display mt-4 text-4xl sm:text-5xl">{material.titulo}</h1>
       </header>
 
-      {material.notas.length > 0 && (
+      {avisos.length > 0 && (
         <div className="mt-6 max-w-3xl rounded-sm bg-oliva-100 p-4">
           <h2 className="text-[15px] font-semibold text-oliva-700">
             Observação da curadoria
           </h2>
           <ul className="mt-1 space-y-1 text-[15px] leading-relaxed text-grafite-700">
-            {material.notas.map((nota) => (
+            {avisos.map((nota) => (
               <li key={nota}>{nota}</li>
             ))}
           </ul>

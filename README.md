@@ -52,26 +52,37 @@ Aponte para outra pasta de origem com a variável `ACERVO_ORIGEM`.
 
 ### Regra de publicação
 
-Cada entrada do `LOTE` diz se o arquivo pode ser hospedado:
+Cada entrada do `LOTE` diz se o arquivo é copiado para `public/acervo`.
+`hospedar: true` copia o PDF independentemente da fonte; a `situacaoUso`
+gravada é que muda, e é ela que decide o que a interface diz:
 
-| `hospedar` | Situação de uso        | O que o site faz                                 |
-| ---------- | ---------------------- | ------------------------------------------------ |
-| `true`     | `hospedagem_conferida` | Mostra o PDF aqui, com visualizador e download.  |
-| `false`    | `somente_referencia`   | Mostra a ficha do documento e o link até a fonte. |
+| `hospedar` | Fonte    | `situacaoUso`          | O que o site mostra                                          |
+| ---------- | -------- | ---------------------- | ------------------------------------------------------------- |
+| `true`     | oficial  | `hospedagem_conferida` | PDF aqui, com visualizador e download; etiqueta sem ressalva.  |
+| `true`     | cópia    | `a_confirmar`          | PDF aqui igual, mas com a etiqueta e o aviso de permissão pendente. |
+| `false`    | —        | `somente_referencia`   | Ficha do documento e o link até a fonte, sem PDF aqui.         |
 
-O script recusa hospedar qualquer arquivo cuja fonte não seja oficial. Cópias de
-cursos e de professores entram apenas como referência à origem, porque a
-permissão para republicar não foi verificada.
+**Decisão do produto em 06/09/2026:** o site passou a hospedar cópias de
+terceiros (Unipre, Madematica, SEYP, Específico) sem esperar a confirmação de
+permissão de republicação — risco que o responsável pelo produto assumiu
+conscientemente. A interface nunca chama isso de "conferido": a etiqueta e a
+ficha do documento dizem "permissão de uso a confirmar", e a página do
+material exibe um aviso fixo de curadoria nesses casos.
 
 ### Lote publicado hoje
 
-45 documentos em 7 seleções, 28 com arquivo hospedado:
+45 documentos em 7 seleções, todos com arquivo hospedado — 28 de fonte oficial
+(`hospedagem_conferida`) e 17 cópias de terceiros hospedadas com permissão
+ainda a confirmar (`a_confirmar`):
 
 - **ITA** — provas e gabaritos 2024 e 2025, edital e orientações de redação 2027
   (fonte oficial `vestibular.ita.br`);
-- **EEAR** — 12 cadernos do CFS 1 e CFS 2 de 2024 (fonte oficial FAB);
-- **AFA** — edital 2027 hospedado; provas e gabaritos 2024–2025 por referência;
-- **EsPCEx, EPCAR, CN, EN** — editais, provas e gabaritos por referência.
+- **EEAR** — edital 2026/2027 e 12 cadernos do CFS 1 e CFS 2 de 2024 (fonte
+  oficial FAB);
+- **AFA** — edital 2027 (fonte oficial); provas e gabaritos 2024–2025 (cópia —
+  Específico);
+- **EsPCEx, EPCAR, CN, EN** — editais, provas e gabaritos (cópias — Unipre,
+  SEYP, Madematica).
 
 Correções de curadoria (título errado, disciplina faltando, ressalva sobre o
 conteúdo do arquivo) ficam no mapa `CURADORIA`, dentro do mesmo script, com o
