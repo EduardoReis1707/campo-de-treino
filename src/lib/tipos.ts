@@ -48,6 +48,16 @@ export type Fonte = {
   oficial: boolean;
 };
 
+/** Brasão/insígnia da instituição, com o crédito exigido pela licença de uso. */
+export type Brasao = {
+  /** Caminho público da imagem, em public/insignias/. */
+  arquivo: string;
+  /** Crédito de autoria e licença, exibido junto à imagem. */
+  credito: string;
+  /** Página de origem (Wikimedia Commons), para conferência. */
+  fonte: string;
+};
+
 export type Selecao = {
   slug: string;
   sigla: string;
@@ -63,6 +73,8 @@ export type Selecao = {
   siteOficial: string;
   /** Ressalvas de curadoria exibidas na página da seleção. */
   observacoes: string[];
+  /** Nulo quando não encontramos um brasão específico e licenciado da instituição. */
+  brasao: Brasao | null;
 };
 
 export type Material = {

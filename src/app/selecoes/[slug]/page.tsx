@@ -59,19 +59,44 @@ export default async function PaginaSelecao({ params }: PageProps<"/selecoes/[sl
         <span className="text-grafite-900">{selecao.sigla}</span>
       </nav>
 
-      <header className="mt-4 max-w-3xl">
-        <h1 className="display text-4xl sm:text-5xl">{selecao.sigla}</h1>
-        <p className="mt-2 text-2xl leading-snug text-grafite-700">{selecao.nome}</p>
-        <p className="mt-4 leading-relaxed text-grafite-600">{selecao.resumo}</p>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {selecao.forcas.map((forca) => (
-            <span
-              key={forca}
-              className="rounded-sm bg-grafite-100 px-2.5 py-1 text-[14px] text-grafite-600"
-            >
-              {forca}
-            </span>
-          ))}
+      <header className="mt-4 flex max-w-3xl gap-5">
+        {selecao.brasao && (
+          // eslint-disable-next-line @next/next/no-img-element -- brasão vem em svg/png/gif variados, sem necessidade de otimização.
+          <img
+            src={selecao.brasao.arquivo}
+            alt={`Brasão da ${selecao.nome}`}
+            width={72}
+            height={72}
+            className="mt-1 h-18 w-18 shrink-0 object-contain"
+          />
+        )}
+        <div>
+          <h1 className="display text-4xl sm:text-5xl">{selecao.sigla}</h1>
+          <p className="mt-2 text-2xl leading-snug text-grafite-700">{selecao.nome}</p>
+          <p className="mt-4 leading-relaxed text-grafite-600">{selecao.resumo}</p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {selecao.forcas.map((forca) => (
+              <span
+                key={forca}
+                className="rounded-sm bg-grafite-100 px-2.5 py-1 text-[14px] text-grafite-600"
+              >
+                {forca}
+              </span>
+            ))}
+          </div>
+          {selecao.brasao && (
+            <p className="mt-3 text-[12px] text-grafite-400">
+              Brasão:{" "}
+              <a
+                href={selecao.brasao.fonte}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="underline underline-offset-2 hover:text-grafite-600"
+              >
+                {selecao.brasao.credito}
+              </a>
+            </p>
+          )}
         </div>
       </header>
 

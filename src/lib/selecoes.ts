@@ -1,4 +1,16 @@
-import type { Forca, GrupoEscolar, Selecao } from "@/lib/tipos";
+import type { Brasao, Forca, GrupoEscolar, Selecao } from "@/lib/tipos";
+
+/**
+ * Brasões obtidos no Wikimedia Commons em 07/09/2026 — todos em domínio público
+ * ou sob licença Creative Commons compatível com reuso. Duas seleções (EN e
+ * EAM) ficam sem brasão: não achamos uma insígnia própria e bem licenciada
+ * para nenhuma das duas — ver commit que introduziu este arquivo.
+ */
+const BRASAO_CIAGA: Brasao = {
+  arquivo: "/insignias/efomm.png",
+  credito: "Arthurmalheiros / Wikimedia Commons, domínio público",
+  fonte: "https://commons.wikimedia.org/wiki/File:Bras%C3%A3o_do_CIAGA.png",
+};
 
 /**
  * Metadados curados das seleções.
@@ -25,6 +37,12 @@ export const SELECOES: Selecao[] = [
     observacoes: [
       "A prova é dividida em fases; a 2ª fase tem provas por disciplina e redação.",
     ],
+    brasao: {
+      arquivo: "/insignias/ita.svg",
+      credito: "Macucal / Wikimedia Commons, CC BY-SA 4.0",
+      fonte:
+        "https://commons.wikimedia.org/wiki/File:Escudo_de_Instituto_Tecnol%C3%B3gico_de_Aeron%C3%A1utica.svg",
+    },
   },
   {
     slug: "ime",
@@ -40,6 +58,12 @@ export const SELECOES: Selecao[] = [
     observacoes: [
       "Há modalidades distintas de ingresso; confira no edital da edição qual se aplica ao seu caso.",
     ],
+    brasao: {
+      arquivo: "/insignias/ime.svg",
+      credito: "Wikimedia Commons, CC BY-SA 4.0",
+      fonte:
+        "https://commons.wikimedia.org/wiki/File:Escudo_de_Instituto_Militar_de_Engenharia.svg",
+    },
   },
   {
     slug: "en",
@@ -55,6 +79,7 @@ export const SELECOES: Selecao[] = [
     observacoes: [
       "Corpos e quadros oferecidos variam por edição; verifique o edital.",
     ],
+    brasao: null,
   },
   {
     slug: "efomm",
@@ -69,7 +94,9 @@ export const SELECOES: Selecao[] = [
     siteOficial: "https://www.marinha.mil.br/ciaga/aefomm",
     observacoes: [
       "A EFOMM forma para a Marinha Mercante; não confunda com a Escola Naval.",
+      "O brasão exibido é do CIAGA, o centro de instrução da Marinha que administra a EFOMM; não localizamos um distintivo próprio dela.",
     ],
+    brasao: BRASAO_CIAGA,
   },
   {
     slug: "afa",
@@ -81,10 +108,15 @@ export const SELECOES: Selecao[] = [
       "Escola de formação de oficiais da Força Aérea Brasileira, em Pirassununga.",
     escolaridadeExigida: "Ensino médio concluído ou em conclusão, conforme o edital da edição.",
     formacaoOferecida: "A confirmar no edital da edição.",
-    siteOficial: "",
+    siteOficial: "https://www2.fab.mil.br/afa/",
     observacoes: [
       "Quadros oferecidos variam por edição; verifique o edital.",
     ],
+    brasao: {
+      arquivo: "/insignias/afa.gif",
+      credito: "Força Aérea Brasileira, domínio público",
+      fonte: "https://commons.wikimedia.org/wiki/File:Academia_da_For%C3%A7a_A%C3%A9rea.gif",
+    },
   },
   {
     slug: "espcex",
@@ -96,8 +128,13 @@ export const SELECOES: Selecao[] = [
       "Escola do Exército Brasileiro, em Campinas, que antecede a formação de oficiais na AMAN.",
     escolaridadeExigida: "Ensino médio concluído ou em conclusão, conforme o edital da edição.",
     formacaoOferecida: "A confirmar no edital da edição.",
-    siteOficial: "",
+    siteOficial: "https://www.espcex.eb.mil.br",
     observacoes: [],
+    brasao: {
+      arquivo: "/insignias/espcex.png",
+      credito: "Rosefigdo / Wikimedia Commons, CC BY-SA 3.0",
+      fonte: "https://commons.wikimedia.org/wiki/File:EsPCEx_7.png",
+    },
   },
   {
     slug: "esa",
@@ -108,8 +145,14 @@ export const SELECOES: Selecao[] = [
     resumo: "Escola do Exército Brasileiro voltada à formação de sargentos de carreira.",
     escolaridadeExigida: "A confirmar no edital da edição.",
     formacaoOferecida: "A confirmar no edital da edição.",
-    siteOficial: "",
+    siteOficial: "https://www.esa.eb.mil.br",
     observacoes: [],
+    brasao: {
+      arquivo: "/insignias/esa.svg",
+      credito: "Wikimedia Commons, CC0",
+      fonte:
+        "https://commons.wikimedia.org/wiki/File:Distintivo_da_Escola_de_Sargentos_das_Armas_-_ESA.svg",
+    },
   },
   {
     slug: "eear",
@@ -121,10 +164,15 @@ export const SELECOES: Selecao[] = [
       "Escola da Força Aérea Brasileira, em Guaratinguetá, responsável pelo Curso de Formação de Sargentos (CFS).",
     escolaridadeExigida: "A confirmar no edital da edição.",
     formacaoOferecida: "Curso de Formação de Sargentos (CFS).",
-    siteOficial: "",
+    siteOficial: "https://www2.fab.mil.br/eear/",
     observacoes: [
       "As provas costumam ter mais de uma incorporação por ano (CFS 1 e CFS 2) e vários cadernos por código.",
     ],
+    brasao: {
+      arquivo: "/insignias/eear.png",
+      credito: "Força Aérea Brasileira, domínio público",
+      fonte: "https://commons.wikimedia.org/wiki/File:COA_EEAR.png",
+    },
   },
   {
     slug: "eam",
@@ -137,6 +185,7 @@ export const SELECOES: Selecao[] = [
     formacaoOferecida: "A confirmar no edital da edição.",
     siteOficial: "https://www.marinha.mil.br/ensino/",
     observacoes: [],
+    brasao: null,
   },
   {
     slug: "cn",
@@ -151,6 +200,11 @@ export const SELECOES: Selecao[] = [
     formacaoOferecida: "Ensino médio militar.",
     siteOficial: "https://www.marinha.mil.br/ensino/",
     observacoes: [],
+    brasao: {
+      arquivo: "/insignias/cn.png",
+      credito: "Marinha do Brasil, domínio público",
+      fonte: "https://commons.wikimedia.org/wiki/File:Bras%C3%A3o_do_Col%C3%A9gio_Naval.png",
+    },
   },
   {
     slug: "epcar",
@@ -165,6 +219,11 @@ export const SELECOES: Selecao[] = [
     formacaoOferecida: "Ensino médio militar.",
     siteOficial: "https://www2.fab.mil.br/epcar/",
     observacoes: [],
+    brasao: {
+      arquivo: "/insignias/epcar.svg",
+      credito: "Força Aérea Brasileira / Wikimedia Commons, CC BY 4.0",
+      fonte: "https://commons.wikimedia.org/wiki/File:Escudo_de_EPCAR.svg",
+    },
   },
 ];
 

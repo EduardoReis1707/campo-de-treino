@@ -40,8 +40,20 @@ export default function Selecoes() {
                       href={`/selecoes/${selecao.slug}`}
                       className="flex h-full flex-col gap-3 border-r border-b border-grafite-200 bg-white p-5 transition-colors hover:bg-oliva-100"
                     >
-                      <span className="flex items-baseline justify-between gap-3">
-                        <span className="display text-3xl">{selecao.sigla}</span>
+                      <span className="flex items-center justify-between gap-3">
+                        <span className="flex items-center gap-2.5">
+                          {selecao.brasao && (
+                            // eslint-disable-next-line @next/next/no-img-element -- brasão vem em svg/png/gif variados, sem necessidade de otimização.
+                            <img
+                              src={selecao.brasao.arquivo}
+                              alt=""
+                              width={32}
+                              height={32}
+                              className="h-8 w-8 shrink-0 object-contain"
+                            />
+                          )}
+                          <span className="display text-3xl">{selecao.sigla}</span>
+                        </span>
                         <Etiqueta tom={total > 0 ? "disponivel" : "referencia"}>
                           {total > 0
                             ? `${total} ${total === 1 ? "documento" : "documentos"}`
