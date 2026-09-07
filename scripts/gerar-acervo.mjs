@@ -80,6 +80,36 @@ const LOTE = [
   { selecao: "CN", categoria: "Editais", ano: "2026", hospedar: true },
   { selecao: "CN", categoria: "Provas", ano: "2024", hospedar: true },
   { selecao: "EN", categoria: "Editais", ano: "2026", hospedar: true },
+
+  // EFOMM — cópia de terceiros (Unipre); edital vigente e as duas edições mais
+  // recentes. A fonte ainda não tem gabarito de 2025, só das provas.
+  { selecao: "EFOMM", categoria: "Editais", ano: "2026-2027", hospedar: true },
+  { selecao: "EFOMM", categoria: "Provas", ano: "2025", hospedar: true },
+  { selecao: "EFOMM", categoria: "Provas", ano: "2024", hospedar: true },
+  { selecao: "EFOMM", categoria: "Gabaritos", ano: "2024", hospedar: true },
+
+  // ESA — cópia de terceiros (Unipre); edital vigente e as duas edições mais
+  // recentes que têm prova e gabarito parelhos (a prova de 2026 já existe na
+  // fonte, mas ainda sem gabarito publicado).
+  { selecao: "ESA", categoria: "Editais", ano: "2026-2027", hospedar: true },
+  { selecao: "ESA", categoria: "Provas", ano: "2025", hospedar: true },
+  { selecao: "ESA", categoria: "Provas", ano: "2024", hospedar: true },
+  { selecao: "ESA", categoria: "Gabaritos", ano: "2025", hospedar: true },
+  { selecao: "ESA", categoria: "Gabaritos", ano: "2024", hospedar: true },
+
+  // EAM — cópia de terceiros (SEYP). Não há gabarito na fonte para nenhuma
+  // edição; publicamos só as provas.
+  { selecao: "EAM", categoria: "Editais", ano: "2026", hospedar: true },
+  { selecao: "EAM", categoria: "Provas", ano: "2026", hospedar: true },
+  { selecao: "EAM", categoria: "Provas", ano: "2025", hospedar: true },
+
+  // IME — cópia de terceiros (Madematica); edital vigente, o caderno combinado
+  // de provas e gabarito de 2026 e as provas de Matemática (única disciplina
+  // disponível na fonte) das duas edições mais recentes.
+  { selecao: "IME", categoria: "Editais", ano: "2026-2027", hospedar: true },
+  { selecao: "IME", categoria: "Provas_e_gabaritos", ano: "2026", hospedar: true },
+  { selecao: "IME", categoria: "Provas_por_disciplina", ano: "2025-2026", hospedar: true },
+  { selecao: "IME", categoria: "Provas_por_disciplina", ano: "2024-2025", hospedar: true },
 ];
 
 /**
@@ -106,6 +136,9 @@ const CURADORIA = {
   "CN/Provas/2024/2024colegio-naval-portugues-estudos-sociais-ciencias.pdf": {
     disciplinas: ["Português", "Estudos Sociais", "Ciências"],
     titulo: "Prova de Português, Estudos Sociais e Ciências — Colégio Naval 2024",
+  },
+  "IME/Provas_e_gabaritos/2026/2026-1-IME-PROVAS-VESTIBULAR-1a-FASE-COM-GABARITOS.pdf": {
+    notas: ["Este arquivo reúne as provas e o gabarito da 1ª fase no mesmo PDF."],
   },
 };
 
@@ -208,6 +241,10 @@ function derivarMetadados({ sigla, categoria, edicao, nome }) {
   if (sigla === "EsPCEx") return derivarEspcex(base, edicao, categoria) ?? vazio;
   if (sigla === "EPCAR") return derivarEpcar(base, edicao, categoria) ?? vazio;
   if (sigla === "CN") return derivarCn(base, edicao, categoria) ?? vazio;
+  if (sigla === "EFOMM") return derivarEfomm(base, edicao) ?? vazio;
+  if (sigla === "ESA") return derivarEsa(base, edicao) ?? vazio;
+  if (sigla === "EAM") return derivarEam(base, edicao) ?? vazio;
+  if (sigla === "IME") return derivarIme(base, edicao, categoria) ?? vazio;
   if (categoria === "Editais") {
     const nomeSelecao = NOME_SELECAO[sigla] ?? sigla;
     return {
@@ -479,6 +516,137 @@ function derivarCn(base, edicao) {
       disciplinas,
       titulo: `Prova de ${lista} — Colégio Naval ${edicao}`,
     };
+  }
+  return null;
+}
+
+/**
+ * EFOMM nomeia por "1o_DIA"/"2o_DIA" e "GABARITO", com o ciclo completo
+ * (aplicação/ingresso) embutido no nome do arquivo, não na pasta do ano.
+ */
+function derivarEfomm(base, edicao) {
+  const ciclo = base.match(/_(\d{4})-(\d{4})_/);
+  const rotulo = ciclo ? `${ciclo[1]}/${ciclo[2]}` : edicao;
+  if (/GABARITO/i.test(base)) {
+    return {
+      tipo: "gabarito",
+      fase: null,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Gabarito — EFOMM ${rotulo}`,
+    };
+  }
+  const dia = base.match(/(\d)o_DIA/);
+  if (dia) {
+    return {
+      tipo: "prova",
+      fase: `${dia[1]}º dia`,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Prova do ${dia[1]}º dia — EFOMM ${rotulo}`,
+    };
+  }
+  if (/edital/i.test(base)) {
+    return {
+      tipo: "edital",
+      fase: null,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Edital — EFOMM ${edicao.replace("-", "/")}`,
+    };
+  }
+  return null;
+}
+
+/** ESA nomeia por "GABARITO" e um arquivo único de prova por ano (sem dias). */
+function derivarEsa(base, edicao) {
+  const ciclo = base.match(/(\d{4})-(\d{4})/);
+  const rotulo = ciclo ? `${ciclo[1]}/${ciclo[2]}` : edicao;
+  if (/GABARITO/i.test(base)) {
+    return {
+      tipo: "gabarito",
+      fase: null,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Gabarito — ESA ${rotulo}`,
+    };
+  }
+  if (/edital/i.test(base)) {
+    return {
+      tipo: "edital",
+      fase: null,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Edital — ESA ${edicao.replace("-", "/")}`,
+    };
+  }
+  return {
+    tipo: "prova",
+    fase: null,
+    caderno: null,
+    disciplinas: [],
+    titulo: `Prova — ESA ${rotulo}`,
+  };
+}
+
+/** EAM: só edital e prova por ano; a fonte não traz gabarito de nenhuma edição. */
+function derivarEam(base, edicao) {
+  if (/edital/i.test(base)) {
+    return {
+      tipo: "edital",
+      fase: null,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Edital — EAM ${edicao}`,
+    };
+  }
+  return {
+    tipo: "prova",
+    fase: null,
+    caderno: null,
+    disciplinas: [],
+    titulo: `Prova — EAM ${edicao}`,
+  };
+}
+
+/**
+ * IME: o edital é um documento avulso do Diário Oficial, o caderno mais
+ * recente já vem com provas e gabarito juntos, e o restante da fonte só tem
+ * a prova de Matemática (2ª fase) avulsa, ano a ano.
+ */
+function derivarIme(base, edicao, categoria) {
+  if (/edital/i.test(base)) {
+    return {
+      tipo: "edital",
+      fase: null,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Edital — IME ${edicao.replace("-", "/")}`,
+    };
+  }
+  if (categoria === "Provas_e_gabaritos") {
+    const faseMatch = base.match(/(\d)a-FASE/i);
+    const fase = faseMatch ? ordinalFase(Number(faseMatch[1])) : null;
+    return {
+      tipo: "prova_e_gabarito",
+      fase,
+      caderno: null,
+      disciplinas: [],
+      titulo: `Prova e gabarito${fase ? ` da ${fase}` : ""} — IME ${edicao}`,
+    };
+  }
+  if (categoria === "Provas_por_disciplina") {
+    const m = base.match(/Prova_de_Matematica_IME_([\d-]+)_(\d)a_fase/);
+    if (m) {
+      const fase = ordinalFase(Number(m[2]));
+      return {
+        tipo: "prova",
+        fase,
+        caderno: null,
+        disciplinas: ["Matemática"],
+        titulo: `Prova de Matemática — ${fase}, IME ${m[1].replace("-", "/")}`,
+      };
+    }
   }
   return null;
 }

@@ -252,6 +252,10 @@ export default async function PaginaMaterial({ params }: PageProps<"/material/[i
               <div className="mt-3">
                 <ListaMateriais materiais={[gabarito]} />
               </div>
+            ) : material.tipo === "prova_e_gabarito" ? (
+              <p className="mt-3 max-w-lg leading-relaxed text-grafite-600">
+                O gabarito já está neste mesmo arquivo, junto com a prova.
+              </p>
             ) : (
               <p className="mt-3 max-w-lg leading-relaxed text-grafite-600">
                 {ehProva

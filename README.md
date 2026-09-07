@@ -71,8 +71,8 @@ material exibe um aviso fixo de curadoria nesses casos.
 
 ### Lote publicado hoje
 
-45 documentos em 7 seleções, todos com arquivo hospedado — 28 de fonte oficial
-(`hospedagem_conferida`) e 17 cópias de terceiros hospedadas com permissão
+65 documentos nas 11 seleções, todos com arquivo hospedado — 28 de fonte oficial
+(`hospedagem_conferida`) e 37 cópias de terceiros hospedadas com permissão
 ainda a confirmar (`a_confirmar`):
 
 - **ITA** — provas e gabaritos 2024 e 2025, edital e orientações de redação 2027
@@ -82,7 +82,14 @@ ainda a confirmar (`a_confirmar`):
 - **AFA** — edital 2027 (fonte oficial); provas e gabaritos 2024–2025 (cópia —
   Específico);
 - **EsPCEx, EPCAR, CN, EN** — editais, provas e gabaritos (cópias — Unipre,
-  SEYP, Madematica).
+  SEYP, Madematica);
+- **EFOMM, ESA** — edital vigente e provas/gabaritos das duas edições mais
+  recentes (cópia — Unipre);
+- **EAM** — edital e as duas provas mais recentes; a fonte não tem gabarito de
+  nenhuma edição (cópia — SEYP);
+- **IME** — edital, o caderno combinado de provas e gabarito de 2026 e a prova
+  de Matemática (única disciplina disponível na fonte) das duas edições mais
+  recentes (cópia — Madematica).
 
 Correções de curadoria (título errado, disciplina faltando, ressalva sobre o
 conteúdo do arquivo) ficam no mapa `CURADORIA`, dentro do mesmo script, com o
